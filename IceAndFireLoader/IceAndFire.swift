@@ -261,7 +261,7 @@ public class IceAndFire {
     }
     
     /**
-     Loads the resource with given ID and calls completition handler.
+     Loads the resource with given ID and calls completion handler.
      ```swift
      IceAndFire.load (2) { (character: IceAndFireCharacter?, error: IceAndFire.Error?) in
      if character != nil {
@@ -286,32 +286,32 @@ public class IceAndFire {
         }
     }
     
-    private class func load (url: NSURL, completitionHandler: ([String: AnyObject]?, Error?) -> ()) {
+    private class func load (url: NSURL, completionHandler: ([String: AnyObject]?, Error?) -> ()) {
         let session = NSURLSession.sharedSession()
         session.dataTaskWithURL(url) {data, response, error in
             guard error == nil else {
-                completitionHandler(nil, .LoadError(error!.description))
+                completionHandler(nil, .LoadError(error!.description))
                 return
             }
             if let httpResponse = response as? NSHTTPURLResponse where httpResponse.statusCode != 200 {
                 let code = "\(httpResponse.statusCode)"
                 let message = NSHTTPURLResponse.localizedStringForStatusCode(httpResponse.statusCode)
-                completitionHandler(nil, .LoadError(code + " " + message))
+                completionHandler(nil, .LoadError(code + " " + message))
                 return
             }
             
             guard data != nil else {
-                completitionHandler (nil, .LoadError ("API didn't return any data"))
+                completionHandler (nil, .LoadError ("API didn't return any data"))
                 return
             }
             do {
                 if let jsonDic = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? [String: AnyObject] {
-                    completitionHandler (jsonDic, nil)
+                    completionHandler (jsonDic, nil)
                 } else {
-                    completitionHandler (nil, .ParseError("Returned JSON from API was not valid"))
+                    completionHandler (nil, .ParseError("Returned JSON from API was not valid"))
                 }
             } catch {
-                completitionHandler (nil, .ParseError("Returned JSON from API was not valid"))
+                completionHandler (nil, .ParseError("Returned JSON from API was not valid"))
             }
             }.resume()
     }

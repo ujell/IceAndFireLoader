@@ -21,10 +21,11 @@ Alternatively you can directly add `IceAndFire.swift` file to your project.
 
 For meaning of fields in these structs please check [An API of Ice and Fire Documentation](https://anapioficeandfire.com/Documentation)
 
-`IceAndFire` class handles communication with the API, parses response and calls completition handler. Check [main.swift](https://raw.githubusercontent.com/ujell/IceAndFireLoader/master/IceAndFireLoader/main.swift) for usage examples.
+`IceAndFire` class handles communication with the API, parses response and calls competition handler. Check [main.swift](https://raw.githubusercontent.com/ujell/IceAndFireLoader/master/IceAndFireLoader/main.swift) for usage examples.
 
 ## TODO
 * Loading all resources in a category with pagination
 * API versioning support
 * Caching
 * XCtest
+* Checking Linux compatibility. 
