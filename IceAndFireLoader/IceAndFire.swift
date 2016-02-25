@@ -303,7 +303,11 @@ public class IceAndFire {
         }
      }
      */
-    public class func load <T:IceAndFireObject> (page: Int, pageSize: Int, completionHandler: ([T]?, Error?) -> ()) {
+    public class func load <T:IceAndFireObject> (page: Int, var pageSize: Int, completionHandler: ([T]?, Error?) -> ()) {
+        if pageSize > 50 {
+            print ("Page size can be maximum 50, 50 is used.")
+            pageSize = 50
+        }
         let url = NSURL(string: apiUrl + T.type.rawValue + "?page=\(page)&pageSize=\(pageSize)")!
         load (url) { result, error in
             guard error == nil else {
