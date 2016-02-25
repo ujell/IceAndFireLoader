@@ -262,23 +262,24 @@ public class IceAndFire {
     
     /**
      Loads the resource with given ID and calls completion handler.
+     Uses type of first variable in completition handler to decide what to load.
      ```swift
      IceAndFire.load (2) { (character: IceAndFireCharacter?, error: IceAndFire.Error?) in
-     if character != nil {
-     print (character!.name)
-     } else if error != nil {
-     print (error!)
-     }
+        if character != nil {
+            print (character!.name)
+        } else if error != nil {
+            print (error!)
+        }
      }
      */
     public class func load <T:IceAndFireObject> (id: Int, completionHandler: (T?, Error?) -> ()) {
         let url = NSURL(string: apiUrl + T.type.rawValue + "/\(id)")!
-        load(url) { dictionary, error in
+        load(url) { result, error in
             guard error == nil else {
                 completionHandler(nil, error)
                 return
             }
-            if let object = T(dictionary: dictionary!) {
+            if let dictionary = result as? [String: AnyObject], let object = T(dictionary: dictionary) {
                 completionHandler (object, nil)
             } else {
                 completionHandler (nil, .ParseError("An error happened while parsing the API data"))
@@ -286,7 +287,44 @@ public class IceAndFire {
         }
     }
     
-    private class func load (url: NSURL, completionHandler: ([String: AnyObject]?, Error?) -> ()) {
+    /**
+     Loads the bulk of resource for given page with given size nad calls completition handler.
+     Uses type of first variable in completition handler to decide what to load.
+     ```swift
+     IceAndFire.load(5, pageSize: 10) { (characters:[IceAndFireCharacter]?, error) in
+        guard error == nil else {
+            print (error!)
+            return
+        }
+        if characters != nil {
+            for character in characters! where character.name != nil {
+                print (character.name)
+            }
+        }
+     }
+     */
+    public class func load <T:IceAndFireObject> (page: Int, pageSize: Int, completionHandler: ([T]?, Error?) -> ()) {
+        let url = NSURL(string: apiUrl + T.type.rawValue + "?page=\(page)&pageSize=\(pageSize)")!
+        load (url) { result, error in
+            guard error == nil else {
+                completionHandler(nil, error)
+                return
+            }
+            if let rawArray = result as? [[String:AnyObject]] {
+                var array = [T]()
+                for dictionary in rawArray {
+                    if let object = T (dictionary: dictionary) {
+                        array.append(object)
+                    } else {
+                        completionHandler (nil, .ParseError("An error happened while parsing the API data"))
+                    }
+                }
+                completionHandler (array, nil)
+            }
+        }
+    }
+    
+    private class func load (url: NSURL, completionHandler: (AnyObject?, Error?) -> ()) {
         let session = NSURLSession.sharedSession()
         session.dataTaskWithURL(url) {data, response, error in
             guard error == nil else {
@@ -307,6 +345,8 @@ public class IceAndFire {
             do {
                 if let jsonDic = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? [String: AnyObject] {
                     completionHandler (jsonDic, nil)
+                } else  if let jsonArray = try NSJSONSerialization.JSONObjectWithData(data!, options: .MutableContainers) as? [[String: AnyObject]] {
+                    completionHandler (jsonArray, nil)
                 } else {
                     completionHandler (nil, .ParseError("Returned JSON from API was not valid"))
                 }
