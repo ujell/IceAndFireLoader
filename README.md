@@ -24,8 +24,8 @@ For meaning of fields in these structs please check [An API of Ice and Fire Docu
 `IceAndFire` class handles communication with the API, parses response and calls competition handler. Check [main.swift](https://raw.githubusercontent.com/ujell/IceAndFireLoader/master/IceAndFireLoader/main.swift) for usage examples.
 
 ## TODO
-* Loading all resources in a category with pagination
 * API versioning support
 * Caching
 * XCtest
 * Checking Linux compatibility. 
+* Better pagination. 
