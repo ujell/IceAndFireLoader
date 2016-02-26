@@ -260,6 +260,7 @@ public class IceAndFire {
         case ParseError(String), LoadError(String)
     }
     
+    
     /**
      Loads the resource with given ID and calls completion handler.
      Uses type of first variable in completition handler to decide what to load.
@@ -290,6 +291,7 @@ public class IceAndFire {
     /**
      Loads the bulk of resource for given page with given size nad calls completition handler.
      Uses type of first variable in completition handler to decide what to load.
+     Right now only way to understand if it's last page is checking if there's result.
      ```swift
      IceAndFire.load(5, pageSize: 10) { (characters:[IceAndFireCharacter]?, error) in
         guard error == nil else {
