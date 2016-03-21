@@ -305,7 +305,8 @@ public class IceAndFire {
         }
      }
      */
-    public class func load <T:IceAndFireObject> (page: Int, var pageSize: Int, completionHandler: ([T]?, Error?) -> ()) {
+    public class func load <T:IceAndFireObject> (page: Int, pageSize: Int, completionHandler: ([T]?, Error?) -> ()) {
+        var pageSize = pageSize
         if pageSize > 50 {
             print ("Page size can be maximum 50, 50 is used.")
             pageSize = 50
